@@ -1,0 +1,21 @@
+{
+  "name": "nepttune/ajaxselect",
+  "description": "Ajax-filled selectbox for nette forms.",
+  "homepage": "https://www.peldax.com",
+  "type": "library",
+  "license": ["MIT"],
+  "authors": [
+    {
+      "name": "Václav Pelíšek",
+      "homepage": "https://www.peldax.com"
+    }
+  ],
+  "require": {
+    "nepttune/base-requirements": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Nepttune\\": "src/"
+    }
+  }
+}
