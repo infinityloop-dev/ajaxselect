@@ -33,11 +33,11 @@ class AjaxSelectExtension extends \Nette\DI\CompilerExtension
 	public static function registerControls() : void
 	{
 		\Nette\Forms\Container::extensionMethod('addAjaxSelect', function (\Nette\Forms\Container $container, $name, $label, callable $function) {
-			return $container[$name] = new AjaxSelect($label, $function);
+			return $container[$name] = new \Nepttune\Form\AjaxSelect($label, $function);
 		});
 
 		\Nette\Forms\Container::extensionMethod('addMultiAjaxSelect', function (\Nette\Forms\Container $container, $name, $label, callable $function) {
-			return $container[$name] = new AjaxMultiSelect($label, $function);
+			return $container[$name] = new \Nepttune\Form\AjaxMultiSelect($label, $function);
 		});
 	}
 }
