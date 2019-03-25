@@ -25,4 +25,10 @@ class AjaxSelect extends \Nette\Forms\Controls\SelectBox implements \Nette\Appli
         $this->callback = $callback;
         parent::__construct($label);
     }
+    
+    public function getValue()
+	{
+	    $this->setValue($this->value);
+		return \array_key_exists($this->value, $this->getItems()) ? $this->value : null;
+	}
 }
