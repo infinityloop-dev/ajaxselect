@@ -28,7 +28,10 @@ class AjaxSelect extends \Nette\Forms\Controls\SelectBox implements \Nette\Appli
     
     public function getValue()
 	{
-	    $this->setValue($this->value);
+	    if (!\in_array($this->value, [null, '', []], true)) {
+			$this->setValue($this->value);
+		}
+		
 		return \array_key_exists($this->value, $this->getItems()) ? $this->value : null;
 	}
 }
