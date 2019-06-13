@@ -10,7 +10,7 @@
  * <https://www.peldax.com>.
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Nepttune\Form;
 
@@ -24,14 +24,5 @@ class AjaxSelect extends \Nette\Forms\Controls\SelectBox implements \Nette\Appli
     {
         $this->callback = $callback;
         parent::__construct($label);
-    }
-    
-    public function getValue()
-    {
-        if (!\in_array($this->value, [null, '', []], true)) {
-            $this->setValue($this->value);
-        }
-
-        return \array_key_exists($this->value, $this->getItems()) ? $this->value : null;
     }
 }
