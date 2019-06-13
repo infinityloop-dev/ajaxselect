@@ -19,81 +19,45 @@ use \Nette\ComponentModel\IComponent;
 
 trait TAjaxSelect
 {
-	/** @var callable */
-	private $callback;
+    /** @var callable */
+    private $callback;
 
-	public function getControl() : \Nette\Utils\Html
-	{
-        if (\count($this->items) === 0) {
-            if (!\in_array($this->value, [null, '', []], true)) {
-                $this->items = $this->getData('', $this->value);
-            }
-            else {
-                $this->items = $this->getData();
-            }
-        }
+    public function setCallback(callable $callback): self
+    {
+        $this->callback = $callback;
+        return $this;
+    }
 
-		$attrs = [];
-		$control = parent::getControl();
+    public function getControl(): \Nette\Utils\Html
+    {
+        $this->initiateItems();
 
-		$attrs['data-ajaxselect'] = $this->getForm()->getPresenter()->link(
-		    $this->lookupPath(Presenter::class) . IComponent::NAME_SEPARATOR . self::SIGNAL_NAME . '!'
+        $attrs = [];
+        $control = parent::getControl();
+
+        $attrs['data-ajaxselect'] = $this->getForm()->getPresenter()->link(
+            $this->lookupPath(Presenter::class) . IComponent::NAME_SEPARATOR . self::SIGNAL_NAME . '!'
         );
 
-		$control->addAttributes($attrs);
-		return $control;
-	}
+        $control->addAttributes($attrs);
+        return $control;
+    }
 
-    /**
-     * @param string $query
-     * @param array|int $default
-     * @return array
-     */
-	private function getData(string $query = '', $default = null) : array
-	{
-		if ($this->callback === null) {
-			throw new \Nette\InvalidStateException('Callback for "' . $this->getHtmlId() . '" is not set.');
-		}
-
-		$data = \call_user_func($this->callback, $query, $default);
-
-		if (!\is_array($data)) {
-			throw new \Nette\InvalidStateException('Callback for "' . $this->getHtmlId() . '" must return array.');
-		}
-
-		return $data;
-	}
-
-    /**
-     * @param mixed $value
-     */
-    public function setValue($value) : void
+    public function setValue($value): void
     {
-        if (!\array_key_exists($value, $this->items)) {
-            if (!\in_array($value, [null, '', []], true)) {
-                $this->items = $this->getData('', $value);
-            }
-            else if (!\in_array($this->value, [null, '', []], true)) {
-                $this->items = $this->getData('', $this->value);
-            }
-            else {
-                $this->items = $this->getData();
-            }
-        }
+        $this->initiateItems($value);
 
         parent::setValue($value);
     }
 
-	public function setCallback(callable $callback) : self
-	{
-		$this->callback = $callback;
-		return $this;
-	}
+    public function getValue()
+    {
+        $this->initiateItems();
 
-    /**
-     * @param string $signal
-     */
-    public function signalReceived($signal) : void
+        return \array_key_exists($this->value, $this->items) ? $this->value : null;
+    }
+
+    public function signalReceived(string $signal): void
     {
         $presenter = $this->lookup(Presenter::class);
 
@@ -101,10 +65,34 @@ trait TAjaxSelect
             return;
         }
 
-        $query = $presenter->getParameter('q');
+        $presenter->sendJson($this->getData($presenter->getParameter('q')));
+    }
 
-        $data = $this->getData($query);
+    private function getData(string $query = '', $default = null): array
+    {
+        if ($this->callback === null) {
+            throw new \Nette\InvalidStateException('Callback for "' . $this->getHtmlId() . '" is not set.');
+        }
 
-        $presenter->sendJson($data);
+        $data = \call_user_func($this->callback, $query, $default);
+
+        if (!\is_array($data)) {
+            throw new \Nette\InvalidStateException('Callback for "' . $this->getHtmlId() . '" must return array.');
+        }
+
+        return $data;
+    }
+
+    private function initiateItems($value = null): void
+    {
+        if (\count($this->items) > 0) {
+            return;
+        }
+
+        if (!\in_array($value ?? $this->value, [null, '', []], true)) {
+            $this->items = $this->getData('', $value ?? $this->value);
+        } else {
+            $this->items = $this->getData();
+        }
     }
 }
