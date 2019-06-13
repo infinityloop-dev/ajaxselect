@@ -18,11 +18,14 @@ class AjaxSelect extends \Nette\Forms\Controls\SelectBox implements \Nette\Appli
 {
     use TAjaxSelect;
 
-    public const SIGNAL_NAME = 'load';
+    public const CALLBACK_SIGNAL_NAME = 'load';
+    public const ONCHANGE_SIGNAL_NAME = 'onchange';
 
-    public function __construct(?string $label, callable $callback)
+    public function __construct(?string $label, callable $callback, callable $onchange = null)
     {
         $this->callback = $callback;
+        $this->onchange = $onchange;
+
         parent::__construct($label);
     }
 }
