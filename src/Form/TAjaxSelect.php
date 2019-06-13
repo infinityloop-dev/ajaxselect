@@ -22,9 +22,18 @@ trait TAjaxSelect
     /** @var callable */
     private $callback;
 
+    /** @var callable */
+    private $onchange;
+
     public function setCallback(callable $callback): self
     {
         $this->callback = $callback;
+        return $this;
+    }
+
+    public function setOnchange(callable $onchange) : self
+    {
+        $this->onchange = $onchange;
         return $this;
     }
 
@@ -36,7 +45,11 @@ trait TAjaxSelect
         $control = parent::getControl();
 
         $attrs['data-ajaxselect'] = $this->getForm()->getPresenter()->link(
-            $this->lookupPath(Presenter::class) . IComponent::NAME_SEPARATOR . self::SIGNAL_NAME . '!'
+            $this->lookupPath(Presenter::class) . IComponent::NAME_SEPARATOR . self::CALLBACK_SIGNAL_NAME . '!'
+        );
+
+        $attrs['data-onchange'] = $this->getForm()->getPresenter()->link(
+            $this->lookupPath(Presenter::class) . IComponent::NAME_SEPARATOR . self::ONCHANGE_SIGNAL_NAME . '!'
         );
 
         $control->addAttributes($attrs);
@@ -61,11 +74,18 @@ trait TAjaxSelect
     {
         $presenter = $this->lookup(Presenter::class);
 
-        if ($signal !== self::SIGNAL_NAME || !$presenter->isAjax() || $this->isDisabled()) {
+        if (!$presenter->isAjax() || $this->isDisabled()) {
             return;
         }
 
-        $presenter->sendJson($this->getData($presenter->getParameter('q')));
+        switch ($signal) {
+            case self::CALLBACK_SIGNAL_NAME:
+                $presenter->sendJson($this->getData($presenter->getParameter('q')));
+                break;
+            case self::ONCHANGE_SIGNAL_NAME:
+                $this->fireOnchange($presenter->getParameter('s'));
+                break;
+        }
     }
 
     private function getData(string $query = '', $default = null): array
@@ -94,5 +114,14 @@ trait TAjaxSelect
         } else {
             $this->items = $this->getData();
         }
+    }
+
+    private function fireOnchange($selected = null) : void
+    {
+        if ($this->onchange === null) {
+            throw new \Nette\InvalidStateException('Onchange for "' . $this->getHtmlId() . '" is not set.');
+        }
+
+        \call_user_func($this->onchange, $selected);
     }
 }
