@@ -18,11 +18,14 @@ class AjaxMultiSelect extends \Nette\Forms\Controls\MultiSelectBox implements \N
 {
     use TAjaxSelect;
 
-    public const SIGNAL_NAME = AjaxSelect::SIGNAL_NAME;
+    public const CALLBACK_SIGNAL_NAME = AjaxSelect::CALLBACK_SIGNAL_NAME;
+    public const ONCHANGE_SIGNAL_NAME = AjaxSelect::ONCHANGE_SIGNAL_NAME;
 
-    public function __construct(?string $label, callable $callback)
+    public function __construct(?string $label, callable $callback, callable $onchange = null)
     {
         $this->callback = $callback;
+        $this->onchange = $onchange;
+
         parent::__construct($label);
     }
 }
