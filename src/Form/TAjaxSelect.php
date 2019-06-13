@@ -53,13 +53,17 @@ trait TAjaxSelect
         $attrs = [];
         $control = parent::getControl();
 
-        $attrs['data-ajaxselect'] = $this->getForm()->getPresenter()->link(
-            $this->lookupPath(Presenter::class) . IComponent::NAME_SEPARATOR . self::CALLBACK_SIGNAL_NAME . '!'
-        );
+        if ($this->callback) {
+            $attrs['data-ajaxselect'] = $this->getForm()->getPresenter()->link(
+                $this->lookupPath(Presenter::class) . IComponent::NAME_SEPARATOR . self::CALLBACK_SIGNAL_NAME . '!'
+            );
+        }
 
-        $attrs['data-onchange'] = $this->getForm()->getPresenter()->link(
-            $this->lookupPath(Presenter::class) . IComponent::NAME_SEPARATOR . self::ONCHANGE_SIGNAL_NAME . '!'
-        );
+        if ($this->onchange) {
+            $attrs['data-onchange'] = $this->getForm()->getPresenter()->link(
+                $this->lookupPath(Presenter::class) . IComponent::NAME_SEPARATOR . self::ONCHANGE_SIGNAL_NAME . '!'
+            );
+        }
 
         $control->addAttributes($attrs);
         return $control;
