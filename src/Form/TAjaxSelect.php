@@ -25,6 +25,9 @@ trait TAjaxSelect
     /** @var callable */
     private $onchange;
 
+    /** @var \Nette\Caching\Cache */
+    private $storage;
+
     public function setCallback(callable $callback): self
     {
         $this->callback = $callback;
@@ -34,6 +37,12 @@ trait TAjaxSelect
     public function setOnchange(callable $onchange) : self
     {
         $this->onchange = $onchange;
+        return $this;
+    }
+
+    public function setCacheStorage(\Nette\Caching\Cache $storage) : self
+    {
+        $this->storage = $storage;
         return $this;
     }
 
@@ -94,10 +103,23 @@ trait TAjaxSelect
             throw new \Nette\InvalidStateException('Callback for "' . $this->getHtmlId() . '" is not set.');
         }
 
+        if ($this->storage instanceof \Nette\Caching\Cache) {
+            $cacheKey = $this->getHtmlId() . '_' . $query . '_' . $default;
+            $result = $this->storage->load($cacheKey);
+
+            if (\is_array($result) && !empty($result)) {
+                return $result;
+            }
+        }
+
         $data = \call_user_func($this->callback, $query, $default);
 
         if (!\is_array($data)) {
             throw new \Nette\InvalidStateException('Callback for "' . $this->getHtmlId() . '" must return array.');
+        }
+
+        if ($this->storage instanceof \Nette\Caching\Cache) {
+            $this->storage->save($cacheKey, $data);
         }
 
         return $data;
