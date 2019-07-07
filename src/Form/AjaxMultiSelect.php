@@ -28,4 +28,11 @@ class AjaxMultiSelect extends \Nette\Forms\Controls\MultiSelectBox implements \N
 
         parent::__construct($label);
     }
+
+    public function getValue() : array
+    {
+        $this->initiateItems();
+
+        return parent::getValue();
+    }
 }
