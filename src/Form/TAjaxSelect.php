@@ -76,13 +76,6 @@ trait TAjaxSelect
         parent::setValue($value);
     }
 
-    public function getValue()
-    {
-        $this->initiateItems();
-
-        return \array_key_exists($this->value, $this->items) ? $this->value : null;
-    }
-
     public function signalReceived(string $signal): void
     {
         $presenter = $this->lookup(Presenter::class);
@@ -101,6 +94,11 @@ trait TAjaxSelect
         }
     }
 
+    /**
+     * @param string $query
+     * @param array|int|null $default
+     * @return array
+     */
     private function getData(string $query = '', $default = null): array
     {
         if ($this->callback === null) {
@@ -108,7 +106,7 @@ trait TAjaxSelect
         }
 
         if ($this->storage instanceof \Nette\Caching\Cache) {
-            $cacheKey = $this->getHtmlId() . '_' . $query . '_' . $default;
+            $cacheKey = $this->getHtmlId() . '_' . $query . '_' . \is_array($default) ? \implode(',', $default) : $default;
             $result = $this->storage->load($cacheKey);
 
             if (\is_array($result) && !empty($result)) {
@@ -131,11 +129,12 @@ trait TAjaxSelect
 
     private function initiateItems($value = null): void
     {
-        if (\count($this->items) > 0) {
+        if ($value === null && \count($this->items) > 0) {
             return;
         }
 
         if (!\in_array($value ?? $this->value, [null, '', []], true)) {
+            bdump('here');
             $this->items = $this->getData('', $value ?? $this->value);
         } else {
             $this->items = $this->getData();
