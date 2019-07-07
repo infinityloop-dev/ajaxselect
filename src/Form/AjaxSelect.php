@@ -28,4 +28,11 @@ class AjaxSelect extends \Nette\Forms\Controls\SelectBox implements \Nette\Appli
 
         parent::__construct($label);
     }
+
+    public function getValue()
+    {
+        $this->initiateItems();
+
+        return parent::getValue();
+    }
 }
