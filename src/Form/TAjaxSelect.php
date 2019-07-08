@@ -106,7 +106,7 @@ trait TAjaxSelect
         }
 
         if ($this->storage instanceof \Nette\Caching\Cache) {
-            $cacheKey = $this->getHtmlId() . '_' . $query . '_' . \is_array($default) ? \implode(',', $default) : $default;
+            $cacheKey = $this->getHtmlId() . '_' . $query . '_' . (\is_array($default) ? \implode(',', $default) : $default);
             $result = $this->storage->load($cacheKey);
 
             if (\is_array($result) && !empty($result)) {
