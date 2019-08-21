@@ -134,7 +134,6 @@ trait TAjaxSelect
         }
 
         if (!\in_array($value ?? $this->value, [null, '', []], true)) {
-            bdump('here');
             $this->items = $this->getData('', $value ?? $this->value);
         } else {
             $this->items = $this->getData();
