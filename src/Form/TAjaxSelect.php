@@ -129,14 +129,16 @@ trait TAjaxSelect
 
     private function initiateItems($value = null): void
     {
-        if ($value === null && \count($this->items) > 0) {
-            return;
-        }
+        $value = $value ?? $this->value;
 
-        if (!\in_array($value ?? $this->value, [null, '', []], true)) {
-            $this->items = $this->getData('', $value ?? $this->value);
-        } else {
+        if (\in_array($value, [null, '', []], true)) {
+            if (\count($this->items) > 0) {
+                return;
+            }
+
             $this->items = $this->getData();
+        } else {
+            $this->items = $this->getData('', $value);
         }
     }
 
