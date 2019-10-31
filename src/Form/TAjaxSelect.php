@@ -136,9 +136,9 @@ trait TAjaxSelect
                 return;
             }
 
-            $this->items = $this->getData();
+            parent::setItems($this->getData());
         } else {
-            $this->items = $this->getData('', $value);
+            parent::setItems($this->getData('', $value));
         }
     }
 
