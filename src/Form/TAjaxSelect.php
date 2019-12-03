@@ -86,7 +86,17 @@ trait TAjaxSelect
 
         switch ($signal) {
             case self::CALLBACK_SIGNAL_NAME:
-                $presenter->sendJson($this->getData($presenter->getParameter('q')));
+                $data = $this->getData($presenter->getParameter('q'));
+                $toJson = [];
+
+                foreach ($data as $key => $value) {
+                     $toJson[] = [
+                         'id' => $key,
+                         'text' => $value,
+                     ];
+                }
+
+                $presenter->sendJson($toJson);
                 break;
             case self::ONCHANGE_SIGNAL_NAME:
                 $this->fireOnchange($presenter->getParameter('s'));
