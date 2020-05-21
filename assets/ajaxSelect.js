@@ -1,5 +1,5 @@
 (function ($) {
-    $.fn.ajaxSelectBox = function (options) {
+    $.fn.ajaxSelectBox = function (selectOptions) {
         return this.each(function() {
             var options = Object.assign({}, selectOptions);
             var select = $(this);
