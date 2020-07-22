@@ -28,6 +28,9 @@ trait TAjaxSelect
     /** @var \Nette\Caching\Cache */
     private $storage;
 
+    /** @var array */
+    private $optionsRaw;
+
     public function setCallback(callable $callback): self
     {
         $this->callback = $callback;
@@ -86,17 +89,7 @@ trait TAjaxSelect
 
         switch ($signal) {
             case self::CALLBACK_SIGNAL_NAME:
-                $data = $this->getData($presenter->getParameter('q'));
-                $toJson = [];
-
-                foreach ($data as $key => $value) {
-                     $toJson[] = [
-                         'id' => $key,
-                         'text' => $value,
-                     ];
-                }
-
-                $presenter->sendJson($toJson);
+                $presenter->sendJson($this->getData($presenter->getParameter('q')));
                 break;
             case self::ONCHANGE_SIGNAL_NAME:
                 $this->fireOnchange($presenter->getParameter('s'));
@@ -107,9 +100,9 @@ trait TAjaxSelect
     /**
      * @param string $query
      * @param array|int|null $default
-     * @return array
+     * @return \Nepttune\Form\ResultObjectSet
      */
-    private function getData(string $query = '', $default = null): array
+    private function getData(string $query = '', $default = null) : \Nepttune\Form\ResultObjectSet
     {
         if ($this->callback === null) {
             throw new \Nette\InvalidStateException('Callback for "' . $this->getHtmlId() . '" is not set.');
@@ -126,7 +119,11 @@ trait TAjaxSelect
 
         $data = \call_user_func($this->callback, $query, $default);
 
-        if (!\is_array($data)) {
+        if (\is_array($data)) {
+            $data = \Nepttune\Form\ResultObjectSet::fromArray($data);
+        }
+
+        if (!$data instanceof \Nepttune\Form\ResultObjectSet) {
             throw new \Nette\InvalidStateException('Callback for "' . $this->getHtmlId() . '" must return array.');
         }
 
@@ -140,16 +137,19 @@ trait TAjaxSelect
     private function initiateItems($value = null): void
     {
         $value = $value ?? $this->value;
+        $data = [];
 
         if (\in_array($value, [null, '', []], true)) {
             if (\count($this->items) > 0) {
                 return;
             }
 
-            parent::setItems($this->getData());
+            $data = $this->getData();
         } else {
-            parent::setItems($this->getData('', $value));
+            $data = $this->getData('', $value);
         }
+
+        parent::setItems($data->getRawData());
     }
 
     private function fireOnchange($selected = null) : void
