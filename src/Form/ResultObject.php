@@ -19,9 +19,9 @@ class ResultObject implements \JsonSerializable
     private int $id;
     private string $text;
     private ?string $title = null;
-    private ?bool $disabled = null;
+    private bool $disabled;
 
-    public function __construct(int $id, string $text, ?string $title = null, ?bool $disabled = null)
+    public function __construct(int $id, string $text, ?string $title = null, bool $disabled = false)
     {
         $this->id = $id;
         $this->text = $text;
@@ -39,6 +39,11 @@ class ResultObject implements \JsonSerializable
         return $this->text;
     }
 
+    public function isDisabled() : bool
+    {
+        return $this->disabled;
+    }
+
     public function jsonSerialize()
     {
         $toReturn = [
@@ -50,7 +55,7 @@ class ResultObject implements \JsonSerializable
             $toReturn['title'] = $this->title;
         }
 
-        if ($this->disabled !== null) {
+        if ($this->disabled === true) {
             $toReturn['disabled'] = $this->disabled;
         }
 

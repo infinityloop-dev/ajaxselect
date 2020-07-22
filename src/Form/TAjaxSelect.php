@@ -28,7 +28,6 @@ trait TAjaxSelect
     /** @var \Nette\Caching\Cache */
     private $storage;
 
-    /** @var array */
     private $optionsRaw;
 
     public function setCallback(callable $callback): self
@@ -100,7 +99,7 @@ trait TAjaxSelect
     /**
      * @param string $query
      * @param array|int|null $default
-     * @return \Nepttune\Form\ResultObjectSet
+     * @return array
      */
     private function getData(string $query = '', $default = null) : \Nepttune\Form\ResultObjectSet
     {
@@ -150,6 +149,7 @@ trait TAjaxSelect
         }
 
         parent::setItems($data->getRawData());
+        parent::setDisabled($data->getDisabled());
     }
 
     private function fireOnchange($selected = null) : void

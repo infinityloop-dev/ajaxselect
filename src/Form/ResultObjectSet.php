@@ -57,6 +57,19 @@ class ResultObjectSet extends \Infinityloop\Utils\ObjectSet implements \JsonSeri
         return $toReturn;
     }
 
+    public function getDisabled() : array
+    {
+        $toReturn = [];
+
+        foreach ($this as $object) {
+            if ($object->isDisabled()) {
+                $toReturn[] = $object->getId();
+            }
+        }
+
+        return $toReturn;
+    }
+
     public function current() : \Nepttune\Form\ResultObject
     {
         return parent::current();
