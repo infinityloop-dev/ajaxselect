@@ -138,6 +138,10 @@ trait TAjaxSelect
         $value = $value ?? $this->value;
         $data = [];
 
+        if ($this instanceof \Nette\Forms\Controls\MultiChoiceControl) {
+            $this->value ??= [];
+        }
+
         if (\in_array($value, [null, '', []], true)) {
             if (\count($this->items) > 0) {
                 return;
