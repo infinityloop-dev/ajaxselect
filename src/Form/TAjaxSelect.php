@@ -135,6 +135,10 @@ trait TAjaxSelect
 
     private function initiateItems($value = null): void
     {
+        if ($this instanceof \Nette\Forms\Controls\MultiChoiceControl) {
+            $this->value ??= [];
+        }
+
         $value = $value ?? $this->value;
         $data = [];
 
