@@ -16,12 +16,12 @@ namespace Nepttune\Form;
 
 class ResultObject implements \JsonSerializable
 {
-    private int $id;
+    private $id;
     private string $text;
     private ?string $title = null;
     private bool $disabled;
 
-    public function __construct(int $id, string $text, ?string $title = null, bool $disabled = false)
+    public function __construct($id, string $text, ?string $title = null, bool $disabled = false)
     {
         $this->id = $id;
         $this->text = $text;
@@ -29,7 +29,7 @@ class ResultObject implements \JsonSerializable
         $this->disabled = $disabled;
     }
 
-    public function getId() : int
+    public function getId()
     {
         return $this->id;
     }
