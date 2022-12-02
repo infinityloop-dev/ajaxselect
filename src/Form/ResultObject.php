@@ -44,7 +44,7 @@ class ResultObject implements \JsonSerializable
         return $this->disabled;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize() : array
     {
         $toReturn = [
             'id' => $this->id,
