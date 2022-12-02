@@ -30,7 +30,7 @@ extensions:
 
 ### Example form
 
-```
+```php
 $form->addAjaxSelect('client_id', 'Klient', function (string $query, ?int $default = 0) {
       if ($default) {
           $row = $this->repository->getRow($default);
@@ -46,7 +46,7 @@ $form->addAjaxSelect('client_id', 'Klient', function (string $query, ?int $defau
 Parameter `$query` contains text being searched, parametered `$default` contains value which is set as default (for example when  editing existing entry, you need to provide saved key => value in your callback).
 
 ### Javascript snippet using select2
-```
+```js
 if ($(this).data('ajaxselect')) {
     $(this).select2({
         tokenSeparators: [',', ' '],
