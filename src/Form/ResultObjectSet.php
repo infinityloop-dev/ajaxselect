@@ -35,7 +35,7 @@ class ResultObjectSet extends \Infinityloop\Utils\ObjectSet implements \JsonSeri
         return new self($objectSet);
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize() : array
     {
         $toReturn = [];
 
